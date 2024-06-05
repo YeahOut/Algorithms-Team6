@@ -7,38 +7,70 @@ import fitz
 
 
 def fill_z_array(S, Z):
+    # 문자열 S의 길이를 n으로 설정
     n = len(S)
+
+    # L과 R은 현재 검사 중인 부분 문자열의 좌우 경계를 나타내며, 초기값은 0으로 설정
     L, R, K = 0, 0, 0
+
+    # 문자열 S의 두 번째 문자부터 끝까지 반복
     for i in range(1, n):
         if i > R:
+            # i가 R보다 크면 새로운 경계를 설정해야 함
             L, R = i, i
+
+            # 일치하는 부분 문자열의 길이를 찾음
             while R < n and S[R] == S[R - L]:
                 R += 1
+
+            # Z[i]에 일치하는 길이를 저장
             Z[i] = R - L
+
+            # R을 감소시켜서 마지막 일치 위치를 설정
             R -= 1
         else:
+            # i가 R보다 작으면 이미 계산된 Z 값을 활용
             K = i - L
+
+            # Z[K] 값이 현재 부분 문자열 경계 내에 있는 경우
             if Z[K] < R - i + 1:
                 Z[i] = Z[K]
             else:
+                # 그렇지 않은 경우 새로운 경계를 설정하고 재검사
                 L = i
                 while R < n and S[R] == S[R - L]:
                     R += 1
+
+                # Z[i]에 일치하는 길이를 저장
                 Z[i] = R - L
+
+                # R을 감소시켜서 마지막 일치 위치를 설정
                 R -= 1
 
+
 # Z-array 기반 문자열 매칭 함수
-
-
 def z_algorithm_search(pattern, text):
+    # 패턴과 텍스트를 결합하고, 그 사이에 특수 문자 '$'를 추가
     concat = pattern + "$" + text
+
+    # 결합된 문자열에 대한 Z 배열을 초기화
     Z = [0] * len(concat)
+
+    # 결합된 문자열에 대해 Z 배열을 채움
     fill_z_array(concat, Z)
+
+    # 패턴이 텍스트에 몇 번 나타나는지 세기 위한 카운터
     count = 0
+
+    # Z 배열을 순회하며 패턴과 일치하는 부분 찾기
     for i in range(len(pattern) + 1, len(Z)):
+        # Z 배열의 값이 패턴의 길이와 같은 경우, 패턴이 일치하는 위치
         if Z[i] == len(pattern):
             count += 1
+
+    # 패턴이 텍스트에 나타난 횟수를 반환
     return count
+
 
 # PDF 파일 내용 읽기
 
@@ -68,7 +100,7 @@ def main():
     pdf_path = r'C:\Users\최예인\Desktop\download'
     directory_path = r'C:\Users\최예인\Desktop\algorithm'
     pdf_files = list_pdf(pdf_path)
-ㅇ
+
     # 폴더 갯수와 이름 입력받기
     folder_count = int(input("필요한 폴더 갯수를 입력하시오 : "))
     folder_names = input("폴더 이름을 입력하시오 : ").split(", ")
