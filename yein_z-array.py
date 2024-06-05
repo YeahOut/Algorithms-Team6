@@ -1,7 +1,7 @@
 import os
 import shutil
 import time
-import fitz  # PyMuPDF를 임포트
+import fitz
 
 # Z-array 계산 함수
 
@@ -10,7 +10,7 @@ def fill_z_array(S, Z):
     # 문자열 S의 길이를 n으로 설정
     n = len(S)
 
-    # L과 R은 현재 검사 중인 부분 문자열의 좌우 경계를 나타냄
+    # L과 R은 현재 검사 중인 부분 문자열의 좌우 경계를 나타내며, 초기값은 0으로 설정
     L, R, K = 0, 0, 0
 
     # 문자열 S의 두 번째 문자부터 끝까지 반복
@@ -73,6 +73,8 @@ def z_algorithm_search(pattern, text):
 
 
 # PDF 파일 내용 읽기
+
+
 def read_pdf_text(pdf_path):
     text = ''
     with fitz.open(pdf_path) as doc:
@@ -85,22 +87,19 @@ def read_pdf_text(pdf_path):
 
 
 def list_subfolders(directory):
-    subfolders = [f.name for f in os.scandir(directory) if f.is_dir()]
-    return subfolders
+    return [f.name for f in os.scandir(directory) if f.is_dir()]
 
 # 해당 폴더에 있는 PDF 파일 이름 불러오기
 
 
-def list_pdf_files(path):
-    pdf_files = [f.name for f in os.scandir(
-        path) if f.is_file() and f.name.lower().endswith('.pdf')]
-    return pdf_files
+def list_pdf(path):
+    return [f.name for f in os.scandir(path) if f.is_file() and f.name.lower().endswith('.pdf')]
 
 
 def main():
-    pdf_path = r'C:/Users/22818/Downloads/'
-    directory_path = r'C:/Users/22818/PycharmProjects/algorithm2homework/'
-    pdf_files = list_pdf_files(pdf_path)
+    pdf_path = r'C:\Users\최예인\Desktop\download'
+    directory_path = r'C:\Users\최예인\Desktop\algorithm'
+    pdf_files = list_pdf(pdf_path)
 
     # 폴더 갯수와 이름 입력받기
     folder_count = int(input("필요한 폴더 갯수를 입력하시오 : "))
@@ -118,8 +117,9 @@ def main():
     for file in pdf_files:
         file_path = os.path.join(pdf_path, file)
         pdf_text = read_pdf_text(file_path)
+        T_len = len(pdf_text)
         result = []
-        label_count_dict = {}
+        match_dict = {}
         start_time = time.time()
 
         for label in labels:
@@ -127,14 +127,14 @@ def main():
             result.append(count)
         end_time = time.time()
         elapsed_time = end_time - start_time
-        print(f'{file} 파일 Z-array 알고리즘 매칭 시간 {elapsed_time:.5f} 초')
+        print('{} 파일 Z-array 알고리즘 매칭 시간 {:5f} 초'.format(file, elapsed_time))
 
         for i in range(len(labels)):
-            label_count_dict[folder_names[i]] = result[i]
+            match_dict[folder_names[i]] = result[i]
 
         max_match = max(result)
         matched_folders = [folder for folder,
-                           count in label_count_dict.items() if count == max_match]
+                           count in match_dict.items() if count == max_match]
 
         if matched_folders:
             target_folder = matched_folders[0]
