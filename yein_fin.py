@@ -35,21 +35,32 @@ def boyer_moore_search(pat, txt):
 # Sunday 알고리즘
 def Sunday(P, T, P_len, T_len):
     i = 0
-    T += '\0'
-    count = 0
-    shift_dict = {}
+    T += '\0'  # 텍스트 끝에 널 문자 추가 (패턴과의 비교를 위해)
+    count = 0  # 패턴이 나타난 횟수를 저장할 변수
+    shift_dict = {}  # 이동 거리를 저장할 딕셔너리
+
+    # 패턴의 각 문자에 대해 이동 거리를 계산하여 딕셔너리에 저장
     for index, value in enumerate(P):
         shift_dict[value] = P_len - index
+
+    # 텍스트를 순차적으로 검사
     while i <= T_len - P_len:
         j = 0
+        # 패턴과 텍스트의 현재 위치에서 일치하는지 검사
         while P[j] == T[i + j]:
             j += 1
             if j >= P_len:
-                count += 1
+                count += 1  # 패턴이 텍스트에서 발견되면 count 증가
                 break
+        
+        # 이동 거리를 계산
+        # 패턴 뒤에 오는 문자에 대한 이동 거리를 딕셔너리에서 가져옴
+        # 만약 그 문자가 딕셔너리에 없으면 패턴 길이 + 1 만큼 이동
         offset = shift_dict[T[i + P_len]] if T[i + P_len] in shift_dict else P_len + 1
-        i += offset
-    return count
+        
+        i += offset  # 텍스트에서 다음 검사 위치로 이동
+
+    return count  # 패턴이 나타난 총 횟수를 반환
 
 # Z-array 계산 함수
 def fill_z_array(S, Z):
